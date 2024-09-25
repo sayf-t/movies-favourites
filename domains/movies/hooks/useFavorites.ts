@@ -1,10 +1,9 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { LocalStorageDataStore } from '../services/LocalStorageDataStore';
-
-const dataStore = new LocalStorageDataStore();
+import { useDataStore } from '../contexts/DataStoreContext';
 
 export function useFavorites() {
   const queryClient = useQueryClient();
+  const dataStore = useDataStore();
 
   const { data: favorites = [] } = useQuery({
     queryKey: ['favorites'],

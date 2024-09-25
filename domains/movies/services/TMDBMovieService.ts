@@ -1,4 +1,5 @@
 import { Movie, MovieDetails } from '../types/movie';
+import { fetchPopularMovies } from '../api/movieApi';
 
 interface TMDBMovieService {
   getPopularMovies(): Promise<Movie[]>;
@@ -6,23 +7,19 @@ interface TMDBMovieService {
 }
 
 class TMDBMovieServiceImpl implements TMDBMovieService {
-  private apiKey: string;
-  private baseUrl: string;
-
-  constructor() {
-    this.apiKey = process.env.NEXT_PUBLIC_TMDB_API_KEY || '';
-    this.baseUrl = 'https://api.themoviedb.org/3';
-  }
-
   async getPopularMovies(): Promise<Movie[]> {
-    const response = await fetch(`${this.baseUrl}/movie/popular?api_key=${this.apiKey}`);
-    const data = await response.json();
-    return data.results;
+    try {
+      const data = await fetchPopularMovies();
+      return data.results;
+    } catch (error) {
+      console.error('Error fetching popular movies:', error);
+      throw error;
+    }
   }
 
   async getMovieDetails(id: number): Promise<MovieDetails> {
-    const response = await fetch(`${this.baseUrl}/movie/${id}?api_key=${this.apiKey}`);
-    return await response.json();
+    // TODO: Implement this method using a similar approach to getPopularMovies
+    throw new Error('Method not implemented.');
   }
 }
 
