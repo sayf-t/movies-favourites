@@ -1,27 +1,34 @@
-import { Movie, MovieDetails } from '../types/movie';
-import { fetchPopularMovies } from '../api/movieApi';
+const API_KEY = process.env.TMDB_API_KEY || "";
 
-interface TMDBMovieService {
-  getPopularMovies(): Promise<Movie[]>;
-  getMovieDetails(id: number): Promise<MovieDetails>;
-}
-
-class TMDBMovieServiceImpl implements TMDBMovieService {
-  async getPopularMovies(): Promise<Movie[]> {
-    try {
-      const data = await fetchPopularMovies();
-      return data.results;
-    } catch (error) {
-      console.error('Error fetching popular movies:', error);
-      throw error;
+class TMDBMovieService {
+  private static validateApiKey() {
+    if (!API_KEY) {
+      throw new Error("API key is not set");
     }
   }
 
-  async getMovieDetails(id: number): Promise<MovieDetails> {
-    // TODO: Implement this method using a similar approach to getPopularMovies
-    throw new Error('Method not implemented.');
+  private static async fetchFromTMDB(endpoint: string) {
+    this.validateApiKey();
+    const response = await fetch(`https://api.themoviedb.org/3${endpoint}`, {
+      headers: {
+        Authorization: `Bearer ${API_KEY}`,
+        accept: "application/json",
+      },
+    });
+    if (!response.ok) {
+      throw new Error("Network response was not ok");
+    }
+    return response.json();
+  }
+
+  static async fetchPopularMovies(page: number = 1) {
+    return this.fetchFromTMDB(`/movie/popular?page=${page}`);
+  }
+
+  // static async searchMovies(query: string) { ... }
+  static async getMovieDetails(id: number) {
+    return this.fetchFromTMDB(`/movie/${id}`);
   }
 }
 
-export { TMDBMovieServiceImpl };
-export type { TMDBMovieService };
+export default TMDBMovieService;
