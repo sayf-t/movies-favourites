@@ -1,8 +1,8 @@
 import { Suspense } from "react";
 import TMDBMovieService from "../services/TMDBMovieService";
-import MovieItem from "./MovieItem";
-import MovieListPagination from "./MovieListPagination";
 import { Movie } from "../types/movie";
+import { MovieCard } from "./MovieCard";
+import MovieListPagination from "./MovieListPagination";
 
 async function fetchPopularMovies(page: number = 1) {
   const movies = await TMDBMovieService.fetchPopularMovies(page);
@@ -14,17 +14,19 @@ export default async function PopularMoviesList({ page = 1 }: { page?: number })
   const moviesData = await fetchPopularMovies(page);
 
   return (
-    <div>
-      <Suspense fallback={<div>Loading movies...</div>}>
-        <ul className="space-y-4">
+    <div className="container mx-auto px-4 py-8">
+      <Suspense fallback={<div className="text-center">Loading movies...</div>}>
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
           {moviesData && Array.isArray(moviesData.results) && moviesData.results.length > 0 ? (
-            moviesData.results.map((movie: Movie) => <MovieItem key={movie.id} movie={movie} />)
+            moviesData.results.map((movie: Movie) => <MovieCard key={movie.id} movie={movie} />)
           ) : (
-            <li>No movies available</li>
+            <div className="col-span-full text-center">No movies available</div>
           )}
-        </ul>
+        </div>
       </Suspense>
-      <MovieListPagination currentPage={page} />
+      <div className="mt-8">
+        <MovieListPagination currentPage={page} />
+      </div>
     </div>
   );
 }

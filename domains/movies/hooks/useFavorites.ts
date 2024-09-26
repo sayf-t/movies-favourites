@@ -24,11 +24,14 @@ export function useFavorites() {
     },
   });
 
+  const isFavorite = (movieId: number) => favorites.includes(movieId);
+
   return {
     favorites,
     addFavorite: addFavoriteMutation.mutate,
     removeFavorite: removeFavoriteMutation.mutate,
     isAddingFavorite: addFavoriteMutation.isPending,
     isRemovingFavorite: removeFavoriteMutation.isPending,
+    isFavorite,
   };
 }
