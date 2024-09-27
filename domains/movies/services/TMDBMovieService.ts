@@ -23,8 +23,12 @@ class TMDBMovieService {
     return response.json();
   }
 
-  static async fetchPopularMovies(page: number = 1) {
-    return this.fetchFromTMDB(`/movie/popular?page=${page}`);
+  static async fetchPopularMovies(page: number = 1): Promise<{ results: Movie[], total_pages: number }> {
+    const data = await this.fetchFromTMDB(`/movie/popular?page=${page}`);
+    return {
+      results: data.results,
+      total_pages: data.total_pages,
+    };
   }
 
   static async getMovieDetails(id: number): Promise<MovieDetails> {

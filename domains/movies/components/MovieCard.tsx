@@ -27,18 +27,14 @@ export function MovieCard({ movie }: MovieCardProps) {
   };
 
   return (
-    <div
-      className="relative rounded-lg overflow-hidden shadow-lg transition-transform duration-300 ease-in-out transform hover:scale-105"
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
-    >
+    <div className="relative aspect-[2/3] rounded-lg overflow-hidden shadow-lg">
       <Link href={`/movies/${movie.id}`}>
         <Image
           src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
           alt={movie.title}
           width={500}
           height={750}
-          className="w-full h-auto"
+          className="w-full h-full object-cover"
         />
         {isHovered && (
           <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center">
@@ -53,7 +49,7 @@ export function MovieCard({ movie }: MovieCardProps) {
       >
         <Heart
           className={`w-6 h-6 ${isMovieFavorite ? "text-red-500" : "text-gray-400"}`}
-          style={{ fill: isMovieFavorite ? "red" : "gray" }} // Ensure fill color is set
+          style={{ fill: isMovieFavorite ? "red" : "none" }}
         />
       </button>
     </div>

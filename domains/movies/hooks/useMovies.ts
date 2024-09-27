@@ -2,10 +2,10 @@ import { useQuery, UseQueryResult } from '@tanstack/react-query';
 import { Movie, MovieDetails } from '../types/movie';
 import TMDBMovieService from '../services/TMDBMovieService';
 
-export function usePopularMovies(): UseQueryResult<Movie[], Error> {
+export function usePopularMovies(page: number): UseQueryResult<{ results: Movie[], total_pages: number }, Error> {
   return useQuery({
-    queryKey: ['popularMovies'],
-    queryFn: fetchPopularMovies,
+    queryKey: ['popularMovies', page],
+    queryFn: () => fetchPopularMovies(page),
   });
 }
 
@@ -23,13 +23,13 @@ export function useMultipleMovieDetails(ids: number[]): UseQueryResult<MovieDeta
   });
 }
 
-async function fetchPopularMovies(): Promise<Movie[]> {
+async function fetchPopularMovies(page: number): Promise<{ results: Movie[], total_pages: number }> {
   try {
-    const movies = await TMDBMovieService.fetchPopularMovies();
-    if (!movies || movies.length === 0) {
+    const moviesData = await TMDBMovieService.fetchPopularMovies(page);
+    if (!moviesData || !moviesData.results || moviesData.results.length === 0) {
       throw new Error('No movies found');
     }
-    return movies;
+    return moviesData;
   } catch (error) {
     console.error('Error in fetchPopularMovies:', error);
     throw new Error('Failed to fetch popular movies');

@@ -75,27 +75,42 @@ export default function MovieDetails({ movieId }: MovieDetailsProps) {
       </Alert>
     );
 
+  const imageStyle = {
+    backgroundImage: `url(https://image.tmdb.org/t/p/original${movie.backdrop_path})`,
+    backgroundSize: "cover",
+    backgroundPosition: "center",
+  };
+
   return (
-    <div className="container mx-auto px-4 py-8">
-      <div className="flex flex-col md:flex-row gap-8">
-        <div className="md:w-1/3">
+    <div>
+      <div className="relative" style={{ height: "80vh", ...imageStyle }}>
+        <div className="absolute inset-0 bg-black bg-opacity-50"></div>
+        <div className="container mx-auto px-4 py-8 relative z-10 h-full flex items-end">
+          <h1 className="text-5xl font-bold text-white">{movie.title}</h1>{" "}
+          {/* Increased font size */}
+        </div>
+      </div>
+      <div className="container mx-auto px-4 py-8">
+        <div className="flex md:w-1/4">
+          {" "}
+          {/* Decreased width for the poster */}
           <Image
             src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
             alt={movie.title}
-            width={500}
-            height={750}
+            width={300}
+            height={450}
             className="w-full h-auto"
           />
-        </div>
-        <div className="md:w-2/3">
-          <h1 className="text-3xl font-bold mb-4">{movie.title}</h1>
-          <div className="flex items-center mb-4">
-            <Star className="text-yellow-400 mr-2" />
-            <span className="text-lg font-semibold">{movie.vote_average.toFixed(1)}/10</span>
+          <div className="md:w-2/3">
+            <h1 className="text-3xl font-bold mb-4">{movie.title}</h1>
+            <div className="flex items-center mb-4">
+              <Star className="text-yellow-400 mr-2" />
+              <span className="text-lg font-semibold">{movie.vote_average.toFixed(1)}/10</span>
+            </div>
+            <FavoriteToggle movieId={movie.id} />
+            <p className="text-gray-700 mb-4">{movie.overview}</p>
+            <p className="text-sm text-gray-500">Release Date: {movie.release_date}</p>
           </div>
-          <FavoriteToggle movieId={movie.id} />
-          <p className="text-gray-700 mb-4">{movie.overview}</p>
-          <p className="text-sm text-gray-500">Release Date: {movie.release_date}</p>
         </div>
       </div>
     </div>

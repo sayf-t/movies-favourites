@@ -7,14 +7,8 @@ interface FavoriteToggleProps {
 }
 
 export function FavoriteToggle({ movieId }: FavoriteToggleProps) {
-  const {
-    favorites,
-    addFavorite,
-    removeFavorite,
-    isAddingFavorite,
-    isRemovingFavorite,
-    isFavorite,
-  } = useFavorites();
+  const { addFavorite, removeFavorite, isAddingFavorite, isRemovingFavorite, isFavorite } =
+    useFavorites();
 
   const handleToggle = () => {
     if (isFavorite(movieId)) {

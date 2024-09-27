@@ -2,29 +2,71 @@
 
 import { useRouter } from "next/navigation";
 
-export default function MovieListPagination({ currentPage }: { currentPage: number }) {
-  const router = useRouter();
+interface MovieListPaginationProps {
+  currentPage: number;
+  totalPages: number;
+}
 
-  const goToPage = (page: number) => {
+export default function MovieListPagination({ currentPage, totalPages }: MovieListPaginationProps) {
+  const router = useRouter();
+  const maxButtonsToShow = 5;
+  const pageCount = Math.min(totalPages, 500);
+  const startPage = Math.max(
+    1,
+    Math.min(currentPage - Math.floor(maxButtonsToShow / 2), pageCount - maxButtonsToShow + 1)
+  );
+  const endPage = Math.min(startPage + maxButtonsToShow - 1, pageCount);
+  const pageButtons = [...Array(endPage - startPage + 1).keys()].map((index) => startPage + index);
+
+  const navigateToPage = (page: number) => {
     router.push(`/?page=${page}`);
   };
 
   return (
-    <div className="flex justify-center mt-4 space-x-2">
+    <div className="flex justify-center mt-8 space-x-2">
       {currentPage > 1 && (
-        <button
-          onClick={() => goToPage(currentPage - 1)}
-          className="px-4 py-2 bg-blue-500 text-white rounded"
-        >
-          Previous
-        </button>
+        <>
+          <button
+            onClick={() => navigateToPage(1)}
+            className="px-4 py-2 bg-blue-500 text-white rounded"
+          >
+            First
+          </button>
+          <button
+            onClick={() => navigateToPage(currentPage - 1)}
+            className="px-4 py-2 bg-blue-500 text-white rounded"
+          >
+            Prev
+          </button>
+        </>
       )}
-      <button
-        onClick={() => goToPage(currentPage + 1)}
-        className="px-4 py-2 bg-blue-500 text-white rounded"
-      >
-        Next
-      </button>
+      {pageButtons.map((page) => (
+        <button
+          key={page}
+          onClick={() => navigateToPage(page)}
+          className={`px-4 py-2 rounded ${
+            currentPage === page ? "bg-blue-700 text-white" : "bg-blue-500 text-white"
+          }`}
+        >
+          {page}
+        </button>
+      ))}
+      {currentPage < pageCount && (
+        <>
+          <button
+            onClick={() => navigateToPage(currentPage + 1)}
+            className="px-4 py-2 bg-blue-500 text-white rounded"
+          >
+            Next
+          </button>
+          <button
+            onClick={() => navigateToPage(pageCount)}
+            className="px-4 py-2 bg-blue-500 text-white rounded"
+          >
+            Last
+          </button>
+        </>
+      )}
     </div>
   );
 }
