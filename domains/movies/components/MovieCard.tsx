@@ -5,7 +5,7 @@ import Link from "next/link";
 import { Heart } from "lucide-react";
 import { useState } from "react";
 import { Movie } from "../types/movie";
-import { useFavorites } from "../hooks/useFavorites";
+import { useFavorites } from "../../favorites/hooks/useFavorites";
 
 interface MovieCardProps {
   movie: Movie;
@@ -15,6 +15,16 @@ export function MovieCard({ movie }: MovieCardProps) {
   const [isHovered, setIsHovered] = useState(false);
   const { addFavorite, removeFavorite, isAddingFavorite, isRemovingFavorite, isFavorite } =
     useFavorites();
+
+  const isMovieFavorite = isFavorite(movie.id);
+
+  const handleToggle = () => {
+    if (isMovieFavorite) {
+      removeFavorite(movie.id);
+    } else {
+      addFavorite(movie.id);
+    }
+  };
 
   return (
     <div
@@ -37,15 +47,13 @@ export function MovieCard({ movie }: MovieCardProps) {
         )}
       </Link>
       <button
-        onClick={(e) => {
-          e.preventDefault();
-          isFavorite(movie.id) ? removeFavorite(movie.id) : addFavorite(movie.id);
-        }}
+        onClick={handleToggle}
         className="absolute top-2 right-2 p-2 bg-white rounded-full shadow-md"
         disabled={isAddingFavorite || isRemovingFavorite}
       >
         <Heart
-          className={`w-6 h-6 ${isFavorite(movie.id) ? "text-red-500 fill-red-500" : "text-gray-400"}`}
+          className={`w-6 h-6 ${isMovieFavorite ? "text-red-500" : "text-gray-400"}`}
+          style={{ fill: isMovieFavorite ? "red" : "gray" }} // Ensure fill color is set
         />
       </button>
     </div>

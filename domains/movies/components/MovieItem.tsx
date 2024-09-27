@@ -1,7 +1,7 @@
 "use client";
 
 import { Movie } from "../types/movie";
-import { useFavorites } from "../hooks/useFavorites";
+import { useFavorites } from "../../favorites/hooks/useFavorites";
 
 export default function MovieItem({ movie }: { movie: Movie }) {
   const { favorites, addFavorite, removeFavorite } = useFavorites();

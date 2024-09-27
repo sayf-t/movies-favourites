@@ -1,6 +1,6 @@
 "use client";
 
-import { useFavorites } from "../../movies/hooks/useFavorites";
+import { useFavorites } from "../hooks/useFavorites";
 
 interface FavoriteToggleProps {
   movieId: number;

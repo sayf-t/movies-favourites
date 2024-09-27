@@ -1,8 +1,9 @@
 import React from "react";
 import { useQuery } from "@tanstack/react-query";
 import TMDBMovieService from "../services/TMDBMovieService";
-import { FavoriteToggle } from "../components/FavoriteToggle";
+import { FavoriteToggle } from "../../favorites/components/FavoriteToggle";
 import { Loader2, AlertCircle, Star } from "lucide-react";
+import Image from "next/image";
 
 interface MovieDetailsProps {
   movieId: number | undefined;
@@ -78,10 +79,12 @@ export default function MovieDetails({ movieId }: MovieDetailsProps) {
     <div className="container mx-auto px-4 py-8">
       <div className="flex flex-col md:flex-row gap-8">
         <div className="md:w-1/3">
-          <img
+          <Image
             src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
             alt={movie.title}
-            className="w-full rounded-lg shadow-lg"
+            width={500}
+            height={750}
+            className="w-full h-auto"
           />
         </div>
         <div className="md:w-2/3">

@@ -1,42 +1,47 @@
-import { useState, useEffect } from 'react';
-import { Movie } from '../../movies/types/movie';
-import TMDBMovieService from '../../movies/services/TMDBMovieService';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useDataStore } from '../../movies/contexts/DataStoreContext';
 
 export function useFavorites() {
-  const [favorites, setFavorites] = useState<number[]>([]);
-  const [favoriteMovies, setFavoriteMovies] = useState<Movie[]>([]);
+  const queryClient = useQueryClient();
+  const dataStore = useDataStore();
 
-  useEffect(() => {
-    fetchFavorites();
-  }, []);
+  const { data: favorites = [], isLoading: isFavoritesLoading } = useQuery({
+    queryKey: ['favorites'],
+    queryFn: () => dataStore.getFavorites(),
+  });
 
-  function fetchFavorites() {
-    const storedFavorites = localStorage.getItem('favorites');
-    if (storedFavorites) {
-      setFavorites(JSON.parse(storedFavorites));
+  const addFavoriteMutation = useMutation({
+    mutationFn: (movieId: number) => dataStore.addFavorite(movieId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['favorites'] });
+    },
+  });
+
+  const removeFavoriteMutation = useMutation({
+    mutationFn: (movieId: number) => dataStore.removeFavorite(movieId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['favorites'] });
+    },
+  });
+
+  const isFavorite = (movieId: number) => favorites.includes(movieId);
+
+  const toggleFavorite = (movieId: number) => {
+    if (isFavorite(movieId)) {
+      removeFavoriteMutation.mutate(movieId);
+    } else {
+      addFavoriteMutation.mutate(movieId);
     }
-  }
+  };
 
-  async function fetchFavoriteMovies() {
-    try {
-      const moviePromises = favorites.map(async (movieId) => {
-        return await TMDBMovieService.getMovieDetails(movieId);
-      });
-      const movies = await Promise.all(moviePromises);
-      setFavoriteMovies(movies);
-    } catch (error) {
-      console.error('Error fetching favorite movies:', error);
-    }
-  }
-
-  function toggleFavorite(movieId: number) {
-    const updatedFavorites = favorites.includes(movieId)
-      ? favorites.filter(id => id !== movieId)
-      : [...favorites, movieId];
-    
-    setFavorites(updatedFavorites);
-    localStorage.setItem('favorites', JSON.stringify(updatedFavorites));
-  }
-
-  return { favorites, favoriteMovies, toggleFavorite, fetchFavoriteMovies };
+  return {
+    favorites,
+    isFavoritesLoading,
+    addFavorite: addFavoriteMutation.mutate,
+    removeFavorite: removeFavoriteMutation.mutate,
+    isAddingFavorite: addFavoriteMutation.isPending,
+    isRemovingFavorite: removeFavoriteMutation.isPending,
+    isFavorite,
+    toggleFavorite,
+  };
 }

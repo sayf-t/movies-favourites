@@ -30,15 +30,22 @@ async function fetchPopularMovies(): Promise<Movie[]> {
   }
 }
 
-async function fetchMovieDetails(id: number): Promise<MovieDetails> {
+async function fetchMovieDetails(id: number): Promise<MovieDetails | null> {
   try {
     const details = await TMDBMovieService.getMovieDetails(id);
     if (!details) {
       throw new Error('Movie details not found');
     }
-    return details;
+    return {
+      ...details,
+      genres: details.genres || [],
+      runtime: details.runtime || 0,
+      budget: details.budget || 0,
+      revenue: details.revenue || 0,
+      tagline: details.tagline || '',
+    };
   } catch (error) {
     console.error(`Error fetching movie details for ID ${id}:`, error);
-    throw new Error(`Failed to fetch movie details for ID ${id}`);
+    return null;
   }
 }
