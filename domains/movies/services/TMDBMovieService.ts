@@ -1,3 +1,5 @@
+import { Movie } from "../types/movie";
+
 const API_KEY = process.env.TMDB_API_KEY || "";
 
 class TMDBMovieService {
@@ -26,7 +28,7 @@ class TMDBMovieService {
   }
 
   // static async searchMovies(query: string) { ... }
-  static async getMovieDetails(id: number) {
+  static async getMovieDetails(id: number): Promise<Movie> {
     return this.fetchFromTMDB(`/movie/${id}`);
   }
 }
