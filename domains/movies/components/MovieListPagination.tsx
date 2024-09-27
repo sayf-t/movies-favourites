@@ -23,18 +23,18 @@ export default function MovieListPagination({ currentPage, totalPages }: MovieLi
   };
 
   return (
-    <div className="flex justify-center mt-8 space-x-2">
+    <div className="flex flex-wrap justify-center mt-8 space-x-2 space-y-2">
       {currentPage > 1 && (
         <>
           <button
             onClick={() => navigateToPage(1)}
-            className="px-4 py-2 bg-blue-500 text-white rounded"
+            className="px-3 py-2 bg-blue-500 text-white rounded text-sm md:text-base"
           >
             First
           </button>
           <button
             onClick={() => navigateToPage(currentPage - 1)}
-            className="px-4 py-2 bg-blue-500 text-white rounded"
+            className="px-3 py-2 bg-blue-500 text-white rounded text-sm md:text-base"
           >
             Prev
           </button>
@@ -44,7 +44,7 @@ export default function MovieListPagination({ currentPage, totalPages }: MovieLi
         <button
           key={page}
           onClick={() => navigateToPage(page)}
-          className={`px-4 py-2 rounded ${
+          className={`px-3 py-2 rounded text-sm md:text-base ${
             currentPage === page ? "bg-blue-700 text-white" : "bg-blue-500 text-white"
           }`}
         >
@@ -55,13 +55,13 @@ export default function MovieListPagination({ currentPage, totalPages }: MovieLi
         <>
           <button
             onClick={() => navigateToPage(currentPage + 1)}
-            className="px-4 py-2 bg-blue-500 text-white rounded"
+            className="px-3 py-2 bg-blue-500 text-white rounded text-sm md:text-base"
           >
             Next
           </button>
           <button
             onClick={() => navigateToPage(pageCount)}
-            className="px-4 py-2 bg-blue-500 text-white rounded"
+            className="px-3 py-2 bg-blue-500 text-white rounded text-sm md:text-base"
           >
             Last
           </button>

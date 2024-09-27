@@ -87,19 +87,16 @@ export default function MovieDetails({ movieId }: MovieDetailsProps) {
         <div className="absolute inset-0 bg-black bg-opacity-50"></div>
         <div className="container mx-auto px-4 py-8 relative z-10 h-full flex items-end">
           <h1 className="text-5xl font-bold text-white">{movie.title}</h1>{" "}
-          {/* Increased font size */}
         </div>
       </div>
       <div className="container mx-auto px-4 py-8">
-        <div className="flex md:w-1/4">
-          {" "}
-          {/* Decreased width for the poster */}
+        <div className="flex md:flex-row flex-col gap-4">
           <Image
             src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
             alt={movie.title}
             width={300}
             height={450}
-            className="w-full h-auto"
+            className="w-full h-auto md:max-w-[300px]"
           />
           <div className="md:w-2/3">
             <h1 className="text-3xl font-bold mb-4">{movie.title}</h1>
