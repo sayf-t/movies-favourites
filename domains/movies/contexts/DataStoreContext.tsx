@@ -1,3 +1,5 @@
+"use client";
+
 import React, { createContext, useContext } from "react";
 import { DataStore } from "../services/DataStore";
 import { LocalStorageDataStore } from "../services/LocalStorageDataStore";

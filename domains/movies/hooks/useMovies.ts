@@ -16,7 +16,13 @@ export function useMovieDetails(id: number): UseQueryResult<MovieDetails, Error>
   });
 }
 
-// Helper functions
+export function useMultipleMovieDetails(ids: number[]): UseQueryResult<MovieDetails[], Error> {
+  return useQuery({
+    queryKey: ['multipleMovieDetails', ids],
+    queryFn: () => Promise.all(ids.map(fetchMovieDetails)),
+  });
+}
+
 async function fetchPopularMovies(): Promise<Movie[]> {
   try {
     const movies = await TMDBMovieService.fetchPopularMovies();
