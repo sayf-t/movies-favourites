@@ -2,29 +2,17 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { Heart } from "lucide-react";
-import { useCallback, useState, memo } from "react";
 import { Movie } from "@/domains/movies/types/movie";
-import { useFavorites } from "@/domains/favorites/hooks/useFavorites";
+import { FavoriteToggle } from "@/domains/favorites/components/FavoriteToggle";
+import { useState } from "react";
 
 interface MovieCardProps {
   movie: Movie;
   onRemoveFavorite?: (movieId: number) => void;
 }
 
-const MovieCard = memo(function MovieCard({ movie, onRemoveFavorite }: MovieCardProps) {
+export function MovieCard({ movie, onRemoveFavorite }: MovieCardProps) {
   const [isHovered, setIsHovered] = useState(false);
-  const { addFavorite, isAddingFavorite, isRemovingFavorite, isFavorite } = useFavorites();
-
-  const isMovieFavorite = isFavorite(movie.id);
-
-  const handleToggle = useCallback(() => {
-    if (isMovieFavorite) {
-      onRemoveFavorite?.(movie.id);
-    } else {
-      addFavorite(movie.id);
-    }
-  }, [isMovieFavorite, movie.id, onRemoveFavorite, addFavorite]);
 
   return (
     <div
@@ -46,18 +34,9 @@ const MovieCard = memo(function MovieCard({ movie, onRemoveFavorite }: MovieCard
           </div>
         )}
       </Link>
-      <button
-        onClick={handleToggle}
-        className="absolute top-2 right-2 p-2 bg-white rounded-full shadow-md"
-        disabled={isAddingFavorite || isRemovingFavorite}
-      >
-        <Heart
-          className={`w-6 h-6 ${isMovieFavorite ? "text-red-500" : "text-gray-400"}`}
-          style={{ fill: isMovieFavorite ? "red" : "none" }}
-        />
-      </button>
+      <div className="absolute top-2 right-2">
+        <FavoriteToggle movieId={movie.id} onRemove={onRemoveFavorite} />
+      </div>
     </div>
   );
-});
-
-export { MovieCard };
+}

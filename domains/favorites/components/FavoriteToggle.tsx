@@ -1,18 +1,23 @@
 "use client";
 
 import { useFavorites } from "../hooks/useFavorites";
+import { Heart } from "lucide-react";
 
 interface FavoriteToggleProps {
   movieId: number;
+  onRemove?: (movieId: number) => void;
 }
 
-export function FavoriteToggle({ movieId }: FavoriteToggleProps) {
+export function FavoriteToggle({ movieId, onRemove }: FavoriteToggleProps) {
   const { addFavorite, removeFavorite, isAddingFavorite, isRemovingFavorite, isFavorite } =
     useFavorites();
 
+  const isMovieFavorite = isFavorite(movieId);
+
   const handleToggle = () => {
-    if (isFavorite(movieId)) {
+    if (isMovieFavorite) {
       removeFavorite(movieId);
+      onRemove && onRemove(movieId);
     } else {
       addFavorite(movieId);
     }
@@ -22,11 +27,12 @@ export function FavoriteToggle({ movieId }: FavoriteToggleProps) {
     <button
       onClick={handleToggle}
       disabled={isAddingFavorite || isRemovingFavorite}
-      className={`px-4 py-2 rounded ${
-        isFavorite(movieId) ? "bg-red-500 text-white" : "bg-gray-200 text-gray-800"
-      }`}
+      className="p-2 bg-white rounded-full shadow-md"
     >
-      {isFavorite(movieId) ? "❤️ Remove from Favorites" : "🤍 Add to Favorites"}
+      <Heart
+        className={`w-6 h-6 ${isMovieFavorite ? "text-red-500" : "text-gray-400"}`}
+        style={{ fill: isMovieFavorite ? "red" : "none" }}
+      />
     </button>
   );
 }
