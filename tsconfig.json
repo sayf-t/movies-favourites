@@ -10,6 +10,7 @@
     "module": "esnext",
     "moduleResolution": "bundler",
     "resolveJsonModule": true,
+    "types": ["next", "next/image", "jest"],
     "isolatedModules": true,
     "jsx": "preserve",
     "downlevelIteration": true,
