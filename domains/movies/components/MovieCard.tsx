@@ -3,32 +3,36 @@
 import Image from "next/image";
 import Link from "next/link";
 import { Heart } from "lucide-react";
-import { useState } from "react";
-import { Movie } from "../types/movie";
-import { useFavorites } from "../../favorites/hooks/useFavorites";
+import { useCallback, useState, memo } from "react";
+import { Movie } from "@/domains/movies/types/movie";
+import { useFavorites } from "@/domains/favorites/hooks/useFavorites";
 
 interface MovieCardProps {
   movie: Movie;
+  onRemoveFavorite?: (movieId: number) => void;
 }
 
-export function MovieCard({ movie }: MovieCardProps) {
+const MovieCard = memo(function MovieCard({ movie, onRemoveFavorite }: MovieCardProps) {
   const [isHovered, setIsHovered] = useState(false);
-  const { addFavorite, removeFavorite, isAddingFavorite, isRemovingFavorite, isFavorite } =
-    useFavorites();
+  const { addFavorite, isAddingFavorite, isRemovingFavorite, isFavorite } = useFavorites();
 
   const isMovieFavorite = isFavorite(movie.id);
 
-  const handleToggle = () => {
+  const handleToggle = useCallback(() => {
     if (isMovieFavorite) {
-      removeFavorite(movie.id);
+      onRemoveFavorite?.(movie.id);
     } else {
       addFavorite(movie.id);
     }
-  };
+  }, [isMovieFavorite, movie.id, onRemoveFavorite, addFavorite]);
 
   return (
-    <div className="relative aspect-[2/3] rounded-lg overflow-hidden shadow-lg">
-      <Link href={`/movies/${movie.id}`}>
+    <div
+      className="relative aspect-[2/3] rounded-lg overflow-hidden shadow-lg transition-transform duration-300 ease-in-out transform hover:translate-y-1"
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+    >
+      <Link href={`/movies/${movie.id}`} scroll={false}>
         <Image
           src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
           alt={movie.title}
@@ -54,4 +58,6 @@ export function MovieCard({ movie }: MovieCardProps) {
       </button>
     </div>
   );
-}
+});
+
+export { MovieCard };

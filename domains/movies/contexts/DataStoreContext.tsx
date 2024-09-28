@@ -1,8 +1,8 @@
 "use client";
 
 import React, { createContext, useContext } from "react";
-import { DataStore } from "../services/DataStore";
-import { LocalStorageDataStore } from "../services/LocalStorageDataStore";
+import { DataStore } from "@/domains/movies/services/DataStore";
+import { LocalStorageDataStore } from "@/domains/movies/services/LocalStorageDataStore";
 
 const DataStoreContext = createContext<DataStore | null>(null);
 

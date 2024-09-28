@@ -1,5 +1,5 @@
-import { Movie } from "../types/movie";
-import { MovieCard } from "./MovieCard";
+import { Movie } from "@/domains/movies/types/movie";
+import { MovieCard } from "@/domains/movies/components/MovieCard";
 
 interface PopularMoviesListProps {
   movies: Movie[];

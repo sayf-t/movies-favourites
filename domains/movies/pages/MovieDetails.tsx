@@ -1,7 +1,7 @@
 import React from "react";
 import { useQuery } from "@tanstack/react-query";
-import TMDBMovieService from "../services/TMDBMovieService";
-import { FavoriteToggle } from "../../favorites/components/FavoriteToggle";
+import TMDBMovieService from "@/domains/movies/services/TMDBMovieService";
+import { FavoriteToggle } from "@/domains/favorites/components/FavoriteToggle";
 import { Loader2, AlertCircle, Star } from "lucide-react";
 import Image from "next/image";
 

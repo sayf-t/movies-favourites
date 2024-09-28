@@ -1,6 +1,6 @@
 import { useQuery, UseQueryResult } from '@tanstack/react-query';
-import { Movie, MovieDetails } from '../types/movie';
-import TMDBMovieService from '../services/TMDBMovieService';
+import { Movie, MovieDetails } from '@/domains/movies/types/movie';
+import TMDBMovieService from '@/domains/movies/services/TMDBMovieService';
 
 export function usePopularMovies(page: number): UseQueryResult<{ results: Movie[], total_pages: number }, Error> {
   return useQuery({
