@@ -1,16 +1,18 @@
 import React from "react";
-import PopularMoviesList from "../components/PopularMoviesList";
+import { usePopularMovies, MoviePage } from "../hooks/useMovies";
+import { MovieCard } from "../components/MovieCard";
 import { Loader2 } from "lucide-react";
-import MovieListPagination from "../components/MovieListPagination";
-import { usePopularMovies } from "../hooks/useMovies";
+import { Movie } from "../types/movie";
+import { UseInfiniteQueryResult } from "@tanstack/react-query";
 
-interface PopularMoviesProps {
-  searchParams?: { page?: string };
+interface PaginatedResponse {
+  pages: MoviePage[];
+  pageParams: number[];
 }
 
-export default function PopularMovies({ searchParams = {} }: PopularMoviesProps) {
-  const page = searchParams?.page ? parseInt(searchParams.page, 10) : 1;
-  const { data, isLoading, isError } = usePopularMovies(page);
+export default function PopularMovies() {
+  const { data, isLoading, isError, fetchNextPage, hasNextPage, isFetchingNextPage } =
+    usePopularMovies(1) as UseInfiniteQueryResult<PaginatedResponse, Error>;
 
   if (isLoading) {
     return (
@@ -24,17 +26,36 @@ export default function PopularMovies({ searchParams = {} }: PopularMoviesProps)
     return <div className="text-center text-red-500">Error loading movies</div>;
   }
 
-  if (!data || !data.results || data.results.length === 0) {
-    return <div className="text-center">No movies available</div>;
-  }
+  const allMovies: Movie[] = data?.pages?.flatMap((page: MoviePage) => page.results) || [];
 
   return (
     <div className="container mx-auto px-4 py-8">
       <h1 className="text-3xl font-bold mb-6">Popular Movies</h1>
-      <PopularMoviesList movies={data.results} />
-      <div className="mt-8">
-        <MovieListPagination currentPage={page} totalPages={data.total_pages} />
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
+        {allMovies.map((movie: Movie) => (
+          <MovieCard key={movie.id} movie={movie} />
+        ))}
       </div>
+      {(hasNextPage || isFetchingNextPage) && (
+        <div className="flex justify-center mt-8">
+          <button
+            onClick={() => fetchNextPage()}
+            disabled={isFetchingNextPage}
+            className={`px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 flex items-center ${
+              isFetchingNextPage ? "opacity-50 cursor-not-allowed" : ""
+            }`}
+          >
+            {isFetchingNextPage ? (
+              <>
+                <Loader2 className="h-5 w-5 animate-spin mr-2" />
+                Loading...
+              </>
+            ) : (
+              "Load More"
+            )}
+          </button>
+        </div>
+      )}
     </div>
   );
 }

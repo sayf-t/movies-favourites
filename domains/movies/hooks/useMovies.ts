@@ -1,11 +1,21 @@
-import { useQuery, UseQueryResult } from '@tanstack/react-query';
+import { useInfiniteQuery, UseInfiniteQueryResult, useQuery, UseQueryResult } from '@tanstack/react-query';
 import { Movie, MovieDetails } from '@/domains/movies/types/movie';
 import TMDBMovieService from '@/domains/movies/services/TMDBMovieService';
 
-export function usePopularMovies(page: number): UseQueryResult<{ results: Movie[], total_pages: number }, Error> {
-  return useQuery({
-    queryKey: ['popularMovies', page],
-    queryFn: () => fetchPopularMovies(page),
+export interface MoviePage {
+  results: Movie[];
+  total_pages: number;
+}
+
+export function usePopularMovies(initialPage: number): UseInfiniteQueryResult<MoviePage, Error> {
+  return useInfiniteQuery({
+    queryKey: ['popularMovies'],
+    queryFn: ({ pageParam = initialPage }) => fetchPopularMovies(pageParam),
+    getNextPageParam: (lastPage, allPages) => {
+      const nextPage = allPages.length + 1;
+      return nextPage <= lastPage.total_pages ? nextPage : undefined;
+    },
+    initialPageParam: initialPage,
   });
 }
 
@@ -23,7 +33,7 @@ export function useMultipleMovieDetails(ids: number[]): UseQueryResult<MovieDeta
   });
 }
 
-async function fetchPopularMovies(page: number): Promise<{ results: Movie[], total_pages: number }> {
+async function fetchPopularMovies(page: number): Promise<MoviePage> {
   try {
     const moviesData = await TMDBMovieService.fetchPopularMovies(page);
     if (!moviesData || !moviesData.results || moviesData.results.length === 0) {

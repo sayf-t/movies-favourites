@@ -2,6 +2,7 @@
 
 import { useFavorites } from "../hooks/useFavorites";
 import { Heart } from "lucide-react";
+import { useQueryClient } from "@tanstack/react-query";
 
 interface FavoriteToggleProps {
   movieId: number;
@@ -9,6 +10,7 @@ interface FavoriteToggleProps {
 }
 
 export function FavoriteToggle({ movieId, onRemove }: FavoriteToggleProps) {
+  const queryClient = useQueryClient();
   const { addFavorite, removeFavorite, isAddingFavorite, isRemovingFavorite, isFavorite } =
     useFavorites();
 
@@ -17,10 +19,12 @@ export function FavoriteToggle({ movieId, onRemove }: FavoriteToggleProps) {
   const handleToggle = () => {
     if (isMovieFavorite) {
       removeFavorite(movieId);
-      onRemove && onRemove(movieId);
+      onRemove?.(movieId);
     } else {
       addFavorite(movieId);
     }
+    // Invalidate and refetch the popularMovies query to update the list
+    queryClient.invalidateQueries({ queryKey: ["popularMovies"] });
   };
 
   return (

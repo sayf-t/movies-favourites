@@ -27,6 +27,7 @@ export function MovieCard({ movie, onRemoveFavorite }: MovieCardProps) {
           width={500}
           height={750}
           className="w-full h-full object-cover"
+          priority
         />
         {isHovered && (
           <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center">
